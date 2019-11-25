@@ -13,6 +13,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import login from '../../../helpers/login';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -56,9 +57,10 @@ const Login = (props) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     }
     const handleChange = prop => event => {
-        setValues({ ...values, [prop]: event.target.value });
         if (prop === "email") {
-            setValues({...values, helperText: emailIsValid(event.target.value) ? '' : 'enter a valid email' });
+            setValues({ ...values, [prop]: event.target.value, helperText: emailIsValid(event.target.value) ? '' : 'enter a valid email' });
+        } else {
+            setValues({ ...values, [prop]: event.target.value });
         }
     };
 
@@ -71,8 +73,13 @@ const Login = (props) => {
     };
 
     const handleLoginClick = () => {
-        console.log(values);
-        props.history.push('/dashboard')
+        // props.history.push('/dashboard');
+        console.log(values.email, values.password)
+        login(values.email, values.password).then(res => {
+            if (res === true) {
+                props.history.push('/dashboard');
+            }
+        })
     }
     return (
         <div className={classes.root}>
@@ -100,7 +107,7 @@ const Login = (props) => {
                     }
                 />
             </FormControl>
-            <Button disabled={values.helperText !== "" || values.password.length === 0} className={classes.btn} variant="contained" color="primary" onClick={handleLoginClick}>
+            <Button type="button" disabled={values.helperText !== "" || values.password.length === 0} className={classes.btn} variant="contained" color="primary" onClick={handleLoginClick}>
                 Login
       </Button>
         </div>
